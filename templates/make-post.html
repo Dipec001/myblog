@@ -1,19 +1,21 @@
-{% extends 'bootstrap/base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% load static %}
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
 {% block content %}
-{% include "header.html" %}
+  {% include "header.html" %}
   <!-- Page Header -->
-  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/edit-bg.jpg')}}')">
+  <header class="masthead" style="background-image: url('../static/img/edit-bg.jpg')">
+    <!-- Adjusted the 'url' function to properly include the background image -->
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="page-heading">
-            {% if is_edit: %}
-            <h1>Edit Post</h1>
-            {% else: %}
-            <h1>New Post</h1>
+            {% if is_edit %}
+              <h1>Edit Post</h1>
+            {% else %}
+              <h1>New Post</h1>
             {% endif %}
             <span class="subheading">You're going to make a great blog post!</span>
           </div>
@@ -25,12 +27,25 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        {{ ckeditor.load() }}
-        {{ ckeditor.config(name='body') }}
-        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+        <form method="post" enctype="multipart/form-data">  <!-- Add enctype for file uploads -->
+          {% csrf_token %}
+          {{ form.title.label_tag }} <br>
+          {{ form.title }} <br>
+          {{ form.subtitle.label_tag }} <br>
+          {{ form.subtitle }} <br>
+          {{ form.body.label_tag }}
+          {{ form.body }}
+          {{ form.img_url.label_tag }}  <!-- Display the label for the image upload -->
+          {{ form.img_url }} <br>  <!-- Add the input for the image upload -->
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <!-- Initialize CKEditor -->
+        <script>
+          CKEDITOR.replace('{{ form.body.auto_id }}');
+        </script>
       </div>
     </div>
   </div>
 
-{% include "footer.html" %}
+  {% include "footer.html" %}
 {% endblock %}

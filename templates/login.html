@@ -1,5 +1,4 @@
-{% extends 'bootstrap/base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
+
 
 {% block content %}
 {% include "header.html" %}
@@ -22,8 +21,27 @@
   <div class="container">
     <div class="row">
 
-      <div class="col-lg-8 col-md-10 mx-auto content">
-        {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+      <div class="col-lg-8 col-md-10 mx-auto content">   
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            {% if messages %}
+              <div class="alert alert-danger">
+                  <strong>Error!</strong> Please correct the issue:
+                  <ul>
+                      {% for message in messages %}
+                          <li>{{ message }}</li>
+                      {% endfor %}
+                  </ul>
+              </div>
+            {% endif %}
+            <label for="id_username">Username:</label> <br>
+            <input type="text" id="id_username" name="username" required> <br>
+            
+            <label for="id_password">Password:</label> <br>
+            <input type="password" id="id_password" name="password" required> <br>
+            
+            <button style="margin-top: 20px" type="submit">Sign In</button>
+        </form>
       </div>
     </div>
   </div>
