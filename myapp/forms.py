@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, BlogPost
+from .models import CustomUser, BlogPost, Comment
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField()  # Use EmailField for email validation
@@ -37,10 +37,19 @@ class LoginForm(forms.ModelForm):
         fields = ('username', 'password')
 
     password = forms.CharField(widget=forms.PasswordInput)
-    
+
 
 
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'subtitle', 'body', 'img_url']
+        fields = ['title', 'subtitle', 'body', 'image']
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']  # Assuming 'text' is the field for the comment text
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 4}),  # Customize the widget for the comment text
+        }

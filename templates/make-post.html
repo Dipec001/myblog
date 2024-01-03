@@ -31,12 +31,16 @@
           {% csrf_token %}
           {{ form.title.label_tag }} <br>
           {{ form.title }} <br>
+          {{ form.title.errors }} <!-- Display title field errors -->
           {{ form.subtitle.label_tag }} <br>
           {{ form.subtitle }} <br>
+          {{ form.subtitle.errors }} <!-- Display subtitle field errors -->
           {{ form.body.label_tag }}
           {{ form.body }}
-          {{ form.img_url.label_tag }}  <!-- Display the label for the image upload -->
-          {{ form.img_url }} <br>  <!-- Add the input for the image upload -->
+          {{ form.body.errors }} <!-- Display body field errors -->
+          {{ form.image.label_tag }}  <!-- Display the label for the image upload -->
+          {{ form.image }} <br>  <!-- Add the input for the image upload -->
+          {{ form.image.errors }} <!-- Display image field errors -->
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <!-- Initialize CKEditor -->

@@ -1,7 +1,12 @@
+{% load static %}
+{% load gravatar_tags %}
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
 {% include "header.html" %}
 
   <!-- Page Header -->
-  <header class="masthead" style="background-image: url('{{post.img_url}}')">
+  <header class="masthead" style="background-image: url('{{ post.image.url }}')">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
@@ -11,7 +16,7 @@
             <h2 class="subheading">{{post.subtitle}}</h2>
             <span class="meta">Posted by
               <a href="#">{{post.author}}</a>
-              on {{post.date}}</span>
+              on {{post.date_posted}}</span>
           </div>
         </div>
       </div>
@@ -26,32 +31,63 @@
             {{ post.body|safe }}
           <hr>
 
-            <div class="clearfix">
-            <a class="btn btn-primary float-right" href="{{url_for('edit_post', post_id=post.id)}}">Edit Post</a>
+            <div style="margin-top: 30px;" class="clearfix">
+            <a class="btn btn-primary float-right" href="{% url 'edit_post' post.id %}">Edit Post</a>
             </div>
 
 
 
 <!--           Comments Area -->
-          <div class="col-lg-8 col-md-10 mx-auto comment">
-              <ul class="commentList">
-                <li>
-                    <div class="commenterImage">
-                      <img src="https://pbs.twimg.com/profile_images/744849215675838464/IH0FNIXk.jpg"/>
-                    </div>
-                    <div class="commentText">
-                      <p>Some comment</p>
-                      <span class="date sub-text">comment author name</span>
-                    </div>
-                </li>
-              </ul>
+            <!-- Comment Form -->
+            <div class="col-lg-8 col-md-10 mx-auto">
+              <form method="post">
+                {% csrf_token %}
+                {{ form.text.errors }}
+                {{ form.text.label_tag }}
+                {{ form.text }}
+                <button style="margin-top: 20px;" type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+            <!-- Initialize CKEditor -->
+            <script>
+              CKEDITOR.replace('{{ form.text.auto_id }}');
+            </script>
             </div>
 
+
+            <!-- Comments Area -->
+            <div class="col-lg-8 col-md-10 mx-auto comment">
+              {% if post.comments.all %}
+              <h3>Comments</h3>
+              <ul class="commentList" style="list-style-type: none; padding-left: 0;">
+                {% for comment in post.comments.all %}
+                <li style="margin-bottom: 20px;">
+                    <div style="display: flex;">
+                        <div class="commenterImage" style="margin-right: 10px;">
+                            <!-- Display commenter image here if available -->
+                            {% if comment.user.email %}
+                                <img src="https://www.gravatar.com/avatar/{{ comment.user.email|md5 }}"/>
+                            {% else %}
+                                <!-- Default image if no email is provided -->
+                                <img src="{% static 'path_to_default_image' %}" alt="Default Image"/>
+                            {% endif %}
+                        </div>
+                        <div class="commentText">
+                            {{ comment.text|safe }}
+                            <span class="date sub-text">{{ comment.user.name }}</span>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+              {% else %}
+              <p>No comments yet.</p>
+              {% endif %}
+            </div>
 
           </div>
       </div>
     </div>
   </article>
 
-  <hr>
+  <hr style="margin: 30px 0;">
 {% include "footer.html" %}

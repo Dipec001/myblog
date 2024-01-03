@@ -13,7 +13,7 @@ class BlogPost(models.Model):
     body = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
-    img_url = models.ImageField(upload_to='blog_images/')
+    image = models.ImageField(upload_to='media/')
 
     def __str__(self):
         return self.title
