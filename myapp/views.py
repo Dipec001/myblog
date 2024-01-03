@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
+from myapp.tasks import send_normal_email
 
 
 # Create your views here.
@@ -40,12 +41,14 @@ def login_view(request):
             login(request, user)
             return redirect('get_all_posts')  # Redirect to a success page after login
         else:
-            error_message = "Invalid username or password. Please try again."
-            return render(request, 'login.html', {'error_message': error_message})
+            messages.error(request, "Invalid username or password. Please try again.")
+
+            return render(request, 'login.html')
     
     return render(request, 'login.html')
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('get_all_posts')
@@ -53,6 +56,11 @@ def logout_view(request):
 @login_required
 def add_new_post(request):
     """View for adding new post"""
+
+    if not request.user.has_perm('myapp.add_blogpost'):
+        # Raise PermissionDenied if the user doesn't have permission
+        raise PermissionDenied
+    
     if request.method == 'POST':
         form = forms.BlogPostForm(request.POST, request.FILES)  # Add request.FILES for image data
         if form.is_valid():
@@ -66,13 +74,40 @@ def add_new_post(request):
 
     return render(request, 'make-post.html', {'form': form})
 
-
 def contact(request):
     if request.method == 'POST':
-        # Handle form submission here if needed
-        pass  # Placeholder for handling form data, processing, or sending emails
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+
+        # Email to notify form submitter
+        notify_data = {
+            'email_subject': "Thank you for contacting us!",
+            'email_body': "We have received your message and will get back to you shortly.",
+            'to_email': email,
+        }
+
+        send_normal_email.delay(**notify_data)
+
+        # Prepare email data
+        email_data = {
+            'email_subject': f"New Contact Form Submission from {name}",
+            'email_body': f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}",
+            'to_email': 'dpecchukwu@gmail.com',  # Replace with your email address
+        }
+
+        # Send email using send_normal_email function
+        send_normal_email.delay(**email_data)
+
+        # Add a success message or redirect to a thank you page
+        messages.success(request, "Your message has been sent!")
+
+        # For example:
+        return render(request, 'contact.html')
 
     return render(request, 'contact.html')
+
 
 
 def show_post(request, post_id):
