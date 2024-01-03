@@ -1,5 +1,6 @@
 {% load static %}
 {% load gravatar_tags %}
+
 <script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
 <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
@@ -62,15 +63,13 @@
                 {% for comment in post.comments.all %}
                 <li style="margin-bottom: 20px;">
                     <div style="display: flex;">
-                        <div class="commenterImage" style="margin-right: 10px;">
-                            <!-- Display commenter image here if available -->
-                            {% if comment.user.email %}
-                                <img src="https://www.gravatar.com/avatar/{{ comment.user.email|md5 }}"/>
-                            {% else %}
-                                <!-- Default image if no email is provided -->
-                                <img src="{% static 'path_to_default_image' %}" alt="Default Image"/>
-                            {% endif %}
-                        </div>
+                      <div class="commenterImage" style="margin-right: 10px;">
+                        <!-- Display commenter image here if available -->
+                            <!-- Use the gravatar filter to display the Gravatar image -->
+                            <!-- {{ comment.user.email|gravatar:150 }} -->
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIWQALj-EQkmJDYNOQKQPi3qA2ctjIYbrowRMegbJjWqC6t8eg-OFkmRoivSXSPuwjDyg&usqp=CAU" alt="Default Image"/>
+                    </div>
+                    
                         <div class="commentText">
                             {{ comment.text|safe }}
                             <span class="date sub-text">{{ comment.user.name }}</span>

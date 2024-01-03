@@ -38,7 +38,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirect to a success page after login
+            return redirect('get_all_posts')  # Redirect to a success page after login
         else:
             error_message = "Invalid username or password. Please try again."
             return render(request, 'login.html', {'error_message': error_message})
