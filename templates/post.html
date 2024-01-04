@@ -43,6 +43,16 @@
             <div class="col-lg-8 col-md-10 mx-auto">
               <form method="post">
                 {% csrf_token %}
+                {% if messages %}
+                  <div class="alert alert-danger">
+                      <strong>Error!</strong> Please correct the issue:
+                      <ul>
+                          {% for message in messages %}
+                              <li>{{ message }}</li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+                {% endif %}
                 {{ form.text.errors }}
                 {{ form.text.label_tag }}
                 {{ form.text }}
