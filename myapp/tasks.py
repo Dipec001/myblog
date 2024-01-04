@@ -3,7 +3,7 @@ from django.conf import settings
 from celery import shared_task
 
 @shared_task(bind=True)
-def send_normal_email(data):
+def send_normal_email(self, data):
     email = EmailMessage(
         subject=data["email_subject"],
         body=data["email_body"],

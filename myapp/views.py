@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from myapp.tasks import send_normal_email
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -88,7 +89,7 @@ def contact(request):
             'to_email': email,
         }
 
-        send_normal_email.delay(**notify_data)
+        send_normal_email.delay(notify_data)
 
         # Prepare email data
         email_data = {
@@ -98,7 +99,7 @@ def contact(request):
         }
 
         # Send email using send_normal_email function
-        send_normal_email.delay(**email_data)
+        send_normal_email.delay(email_data)
 
         # Add a success message or redirect to a thank you page
         messages.success(request, "Your message has been sent!")
@@ -162,3 +163,9 @@ def delete_post(request, post_id):
     
     post.delete()
     return HttpResponseRedirect(reverse('get_all_posts'))
+
+
+def health_check(request):
+    # You can customize the response as needed
+    return HttpResponse("OK")
+
