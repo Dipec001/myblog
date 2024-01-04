@@ -131,7 +131,7 @@ def show_post(request, post_id):
     }
     return render(request, 'post.html', context)
 
-
+@login_required
 def edit_post(request, post_id):
     post = get_object_or_404(BlogPost, id=post_id)
     
@@ -152,7 +152,7 @@ def edit_post(request, post_id):
     
     return render(request, 'make-post.html', {'form': form, 'is_edit': is_edit})
 
-
+@login_required
 def delete_post(request, post_id):
     """
     View for deleting a blog post. Requires admin permissions.

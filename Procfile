@@ -1,2 +1,2 @@
-web gunicorn myblog.wsgi:application --log-file -
+gunicorn myblog.wsgi:application
 worker: celery -A myblog.celery worker --pool=solo -l info
