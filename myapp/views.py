@@ -10,7 +10,6 @@ from django.core.exceptions import PermissionDenied
 from myapp.tasks import send_normal_email
 from django.http import HttpResponse
 
-
 # Create your views here.
 def get_all_posts(request):
     posts = BlogPost.objects.all()
