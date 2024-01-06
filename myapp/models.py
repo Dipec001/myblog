@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from .read_time import calculate_reading_time
 
 
 # Create your models here.
@@ -14,6 +14,11 @@ class BlogPost(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
     image = models.ImageField(upload_to='media/')
+    estimated_read_time = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        self.estimated_read_time = calculate_reading_time(self.body)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

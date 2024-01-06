@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from myapp.tasks import send_normal_email
 from django.http import HttpResponse
+from . import read_time
 
 # Create your views here.
 def get_all_posts(request):

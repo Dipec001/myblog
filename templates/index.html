@@ -31,7 +31,7 @@
           </a>
           <p class="post-meta">Posted by {{ post.author }}
             <a href="#"></a>
-            on {{ post.date_posted | date:"Y-m-d" }}
+            on {{ post.date_posted | date:"Y-m-d" }} (A {{ post.estimated_read_time }} minutes read )
             {% if perms.myapp.delete_blogpost %}
             <a href="{% url 'delete_post' post.id %}">✘</a>
             {% endif %}
